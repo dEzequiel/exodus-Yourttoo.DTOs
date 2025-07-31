@@ -80,22 +80,35 @@ namespace Yourttoo.DTOs.Controllers
         /// <summary>
         /// Creates a new tag category
         /// </summary>
-        /// <param name="request">Data for the category to create</param>
+        /// <param name="apiRequest">API request containing category data</param>
         /// <returns>Created category</returns>
         [HttpPost]
         [ProducesResponseType(typeof(TagCategoryDto), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<TagCategoryDto>> Create([FromBody] CreateTagCategoryRequest request)
+        public async Task<ActionResult<TagCategoryDto>> Create([FromBody] ApiRequest<CreateTagCategoryRequest> apiRequest)
         {
             try
             {
-                _logger.LogInformation("Creating new tag category with code: {Code}", request.Code);
+                _logger.LogInformation("Creating new tag category via API request");
 
                 if (!ModelState.IsValid)
                 {
                     return BadRequest(ModelState);
                 }
+
+                if (!apiRequest.IsValid())
+                {
+                    return BadRequest("Invalid API request");
+                }
+
+                if (apiRequest.Payload == null)
+                {
+                    return BadRequest("Request payload is required");
+                }
+
+                var request = apiRequest.Payload;
+                _logger.LogInformation("Creating new tag category with code: {Code}", request.Code);
 
                 // TODO: Implement business logic to create the category
                 var category = new TagCategoryDto
@@ -123,14 +136,14 @@ namespace Yourttoo.DTOs.Controllers
         /// Updates an existing tag category
         /// </summary>
         /// <param name="id">Category ID</param>
-        /// <param name="request">Updated data for the category</param>
+        /// <param name="apiRequest">API request containing updated category data</param>
         /// <returns>Updated category</returns>
         [HttpPut("{id:guid}")]
         [ProducesResponseType(typeof(TagCategoryDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<TagCategoryDto>> Update(Guid id, [FromBody] CreateTagCategoryRequest request)
+        public async Task<ActionResult<TagCategoryDto>> Update(Guid id, [FromBody] ApiRequest<CreateTagCategoryRequest> apiRequest)
         {
             try
             {
@@ -140,6 +153,18 @@ namespace Yourttoo.DTOs.Controllers
                 {
                     return BadRequest(ModelState);
                 }
+
+                if (!apiRequest.IsValid())
+                {
+                    return BadRequest("Invalid API request");
+                }
+
+                if (apiRequest.Payload == null)
+                {
+                    return BadRequest("Request payload is required");
+                }
+
+                var request = apiRequest.Payload;
 
                 // TODO: Implement business logic to update the category
                 var category = new TagCategoryDto
