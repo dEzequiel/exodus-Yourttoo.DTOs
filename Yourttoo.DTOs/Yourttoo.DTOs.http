@@ -1,0 +1,6 @@
+@Yourttoo.DTOs_HostAddress = http://localhost:5002
+
+GET {{Yourttoo.DTOs_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
